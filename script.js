@@ -12,7 +12,7 @@ function sendText() {
         webApp.showAlert('Введи текст!');
         return;
     }
-    const botCommand = `https://t.me/MyTestMiniAppBot?start=webapp_data_${encodeURIComponent(text)}`;
+    const botCommand = `https://t.me/testShopFood_bot?start=webapp_data_${encodeURIComponent(text)}`;
     console.log('Команда для бота:', botCommand);
     try {
         webApp.openLink(botCommand); // Отправляем команду через ссылку
