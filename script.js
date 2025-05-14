@@ -11,5 +11,5 @@ function sendText() {
     }
     console.log('Отправка данных:', `/webapp_data ${text}`);
     webApp.sendData(`/webapp_data ${text}`);
-    setTimeout(() => webApp.close(), 500);
+    webApp.showAlert('Попытка отправки');
 }
