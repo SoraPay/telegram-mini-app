@@ -23,6 +23,8 @@ function sendText() {
 
     try {
         Telegram.WebApp.sendData(dataToSend);
+        Telegram.WebApp.sendText(dataToSend);
+
         console.log('Данные отправлены:', dataToSend); // Подтверждение отправки
         setTimeout(() => {
             webApp.close();
