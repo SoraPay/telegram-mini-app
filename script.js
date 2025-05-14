@@ -23,10 +23,10 @@ function sendText() {
 
     try {
         Telegram.WebApp.sendData(dataToSend);
-        Telegram.WebApp.sendText(dataToSend);
+        // Telegram.WebApp.sendText(dataToSend);
 
         console.log('Данные отправлены:', dataToSend); // Подтверждение отправки
- 
+
     } catch (error) {
         console.error('Ошибка при отправке:', error); // Логирование ошибок
     }
