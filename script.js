@@ -1,10 +1,12 @@
 const textInput = document.getElementById('textInput');
 const webApp = window.Telegram.WebApp;
+//Telegram.WebApp.sendData
 
 console.log('Telegram.WebApp инициализирован:', webApp); // Проверка инициализации
 
 webApp.ready();
 console.log('webApp.ready() выполнен'); // Проверка готовности
+
 
 function sendText() {
     const text = textInput.value.trim();
@@ -20,7 +22,7 @@ function sendText() {
     console.log('Данные для отправки:', dataToSend); // Логирование данных
 
     try {
-        webApp.sendData(dataToSend);
+        Telegram.WebApp.sendData(dataToSend);
         console.log('Данные отправлены:', dataToSend); // Подтверждение отправки
         setTimeout(() => {
             webApp.close();
