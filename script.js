@@ -9,6 +9,7 @@ function sendText() {
         webApp.showAlert('Введи текст!');
         return;
     }
+    console.log('Отправка данных:', `/webapp_data ${text}`);
     webApp.sendData(`/webapp_data ${text}`);
-    webApp.close();
+    setTimeout(() => webApp.close(), 500);
 }
