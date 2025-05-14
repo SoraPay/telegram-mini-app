@@ -1,33 +1,24 @@
 const textInput = document.getElementById('textInput');
 const webApp = window.Telegram.WebApp;
-//Telegram.WebApp.sendData
 
-console.log('Telegram.WebApp инициализирован:', webApp); // Проверка инициализации
-
+console.log('Telegram.WebApp:', webApp);
 webApp.ready();
-console.log('webApp.ready() выполнен'); // Проверка готовности
-
+console.log('webApp.ready() выполнен');
 
 function sendText() {
     const text = textInput.value.trim();
-    console.log('Введённый текст:', text); // Логирование текста
-
+    console.log('Текст:', text);
     if (!text) {
         webApp.showAlert('Введи текст!');
-        console.log('Показан алерт: введи текст');
         return;
     }
-
-    const dataToSend = `/webapp_data ${text}`;
-    console.log('Данные для отправки:', dataToSend); // Логирование данных
-
+    const botCommand = `https://t.me/MyTestMiniAppBot?start=webapp_data_${encodeURIComponent(text)}`;
+    console.log('Команда для бота:', botCommand);
     try {
-        Telegram.WebApp.sendData(dataToSend);
-        // Telegram.WebApp.sendText(dataToSend);
-
-        console.log('Данные отправлены:', dataToSend); // Подтверждение отправки
-
+        webApp.openLink(botCommand); // Отправляем команду через ссылку
+        webApp.showAlert('Команда отправлена: ' + botCommand);
+        setTimeout(() => webApp.close(), 500);
     } catch (error) {
-        console.error('Ошибка при отправке:', error); // Логирование ошибок
+        webApp.showAlert('Ошибка: ' + error.message);
     }
 }
