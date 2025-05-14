@@ -26,10 +26,7 @@ function sendText() {
         Telegram.WebApp.sendText(dataToSend);
 
         console.log('Данные отправлены:', dataToSend); // Подтверждение отправки
-        setTimeout(() => {
-            webApp.close();
-            console.log('Mini App закрыт после задержки');
-        }, 500); // Задержка 500мс
+ 
     } catch (error) {
         console.error('Ошибка при отправке:', error); // Логирование ошибок
     }
