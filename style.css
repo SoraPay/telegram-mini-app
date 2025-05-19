@@ -1,30 +1,144 @@
 body {
     font-family: Arial, sans-serif;
-    padding: 20px;
-    max-width: 600px;
+    background: #000;
+    color: #fff;
+    margin: 0;
+    padding: 16px;
+    max-width: 375px;
     margin: 0 auto;
 }
 
-h1 {
-    font-size: 24px;
-    text-align: center;
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-input {
+.search-bar {
     width: 100%;
     padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #333;
+    color: #fff;
+}
+
+.section {
+    background: #1a1a1a;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.section h2 {
+    font-size: 18px;
     margin-bottom: 10px;
 }
 
-button {
-    width: 100%;
+.history-scroll,
+.catalog-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.card,
+.product-card {
+    background: #2a2a2a;
     padding: 10px;
-    background-color: #0088cc;
-    color: white;
+    border-radius: 5px;
+    min-width: 100px;
+    text-align: center;
+    position: relative;
+}
+
+.product-card {
+    min-width: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.product-card img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.favorite-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: transparent;
     border: none;
+    color: #fff;
+    font-size: 18px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #006699;
+.favorite-btn:hover {
+    color: #D4AF37;
+}
+
+.product-card h3 {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.product-card p {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.product-card span {
+    font-size: 14px;
+    font-weight: bold;
+    color: #D4AF37;
+}
+
+.product-card button {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+    background: #D4AF37;
+    border: none;
+    border-radius: 3px;
+    color: #000;
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    position: fixed;
+    bottom: 10px;
+    width: calc(100% - 32px);
+    background: #1a1a1a;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.nav-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #333;
+    color: #fff;
+    font-size: 18px;
+}
+
+.nav-buttons .active {
+    background: #D4AF37;
+    color: #000;
+}
+
+.favorite-btn .liked {
+    color: #D4AF37;
+    /* Золотой цвет для заполненного сердечка */
+}
+
+.favorite-btn:hover .liked {
+    color: #fff;
+    /* Белый при наведении */
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
+    <title>Избранные товары</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -12,23 +12,12 @@
 
 <body>
     <div class="container">
-        <input type="text" id="searchInput" placeholder="Поиск..." class="search-bar">
-
-        <div class="section history">
-            <h2>Просмотр истории</h2>
-            <div class="history-scroll">
-                <div class="card">История 1</div>
-                <div class="card">История 2</div>
-                <div class="card">История 3</div>
-            </div>
-        </div>
-
-        <div class="section catalog">
-            <h2>Каталог</h2>
+        <div class="section favorites">
+            <h2>Избранные товары</h2>
             <div class="catalog-scroll">
                 <div class="product-card">
                     <img src="https://via.placeholder.com/100" alt="Product">
-                    <button class="favorite-btn"><i class="fas fa-heart"></i></button>
+                    <button class="favorite-btn"><i class="fas fa-heart liked"></i></button>
                     <h3>Товар 1</h3>
                     <p>Описание товара</p>
                     <span>100 руб</span>
@@ -37,7 +26,7 @@
                 </div>
                 <div class="product-card">
                     <img src="https://via.placeholder.com/100" alt="Product">
-                    <button class="favorite-btn"><i class="fas fa-heart"></i></button>
+                    <button class="favorite-btn"><i class="fas fa-heart liked"></i></button>
                     <h3>Товар 2</h3>
                     <p>Описание товара</p>
                     <span>200 руб</span>
@@ -48,12 +37,12 @@
         </div>
 
         <div class="nav-buttons">
-            <button class="active"><i class="fas fa-home"></i></button>
-            <button><i class="fas fa-heart"></i></button>
+            <button><i class="fas fa-home"></i></button>
+            <button class="active"><i class="fas fa-heart"></i></button>
             <button><i class="fas fa-user"></i></button>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="favorites.js"></script>
 </body>
 
 </html>
