@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
+    <title>Main App</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -12,46 +12,97 @@
 
 <body>
     <div class="container">
-        <input type="text" id="searchInput" placeholder="Поиск..." class="search-bar">
+        <!-- Главная страница -->
+        <div class="page main-page active">
+            <input type="text" id="searchInput" placeholder="Поиск..." class="search-bar">
 
-        <div class="section history">
-            <h2>Просмотр истории</h2>
-            <div class="history-scroll">
-                <div class="card">История 1</div>
-                <div class="card">История 2</div>
-                <div class="card">История 3</div>
+            <div class="section history">
+                <h2>Просмотр истории</h2>
+                <div class="history-scroll">
+                    <div class="card">История 1</div>
+                    <div class="card">История 2</div>
+                    <div class="card">История 3</div>
+                </div>
+            </div>
+
+            <div class="section catalog">
+                <h2>Каталог</h2>
+                <div class="catalog-scroll">
+                    <div class="product-card">
+                        <img src="https://via.placeholder.com/100" alt="Product">
+                        <button class="favorite-btn"><i class="fas fa-heart"></i></button>
+                        <h3>Товар 1</h3>
+                        <p>Описание товара</p>
+                        <span>100 руб</span>
+                        <button>В избранное</button>
+                        <button>Купить</button>
+                    </div>
+                    <div class="product-card">
+                        <img src="https://via.placeholder.com/100" alt="Product">
+                        <button class="favorite-btn"><i class="fas fa-heart"></i></button>
+                        <h3>Товар 2</h3>
+                        <p>Описание товара</p>
+                        <span>200 руб</span>
+                        <button>В избранное</button>
+                        <button>Купить</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="section catalog">
-            <h2>Каталог</h2>
-            <div class="catalog-scroll">
-                <div class="product-card">
-                    <img src="https://via.placeholder.com/100" alt="Product">
-                    <button class="favorite-btn"><i class="fas fa-heart"></i></button>
-                    <h3>Товар 1</h3>
-                    <p>Описание товара</p>
-                    <span>100 руб</span>
-                    <button>В избранное</button>
-                    <button>Купить</button>
-                </div>
-                <div class="product-card">
-                    <img src="https://via.placeholder.com/100" alt="Product">
-                    <button class="favorite-btn"><i class="fas fa-heart"></i></button>
-                    <h3>Товар 2</h3>
-                    <p>Описание товара</p>
-                    <span>200 руб</span>
-                    <button>В избранное</button>
-                    <button>Купить</button>
+        <!-- Страница Избранные -->
+        <div class="page favorites-page">
+            <div class="section favorites">
+                <h2>Избранные товары</h2>
+                <div class="catalog-scroll">
+                    <div class="product-card">
+                        <img src="https://via.placeholder.com/100" alt="Product">
+                        <button class="favorite-btn"><i class="fas fa-heart liked"></i></button>
+                        <h3>Товар 1</h3>
+                        <p>Описание товара</p>
+                        <span>100 руб</span>
+                        <button>В избранное</button>
+                        <button>Купить</button>
+                    </div>
+                    <div class="product-card">
+                        <img src="https://via.placeholder.com/100" alt="Product">
+                        <button class="favorite-btn"><i class="fas fa-heart liked"></i></button>
+                        <h3>Товар 2</h3>
+                        <p>Описание товара</p>
+                        <span>200 руб</span>
+                        <button>В избранное</button>
+                        <button>Купить</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="nav-buttons">
-            <button class="active"><i class="fas fa-home"></i></button>
-            <button><i class="fas fa-heart"></i></button>
-            <button><i class="fas fa-user"></i></button>
+        <!-- Страница Профиль -->
+        <div class="page profile-page">
+            <div class="profile-section">
+                <img src="https://via.placeholder.com/100" alt="User Photo" class="user-photo">
+                <h2>Имя пользователя</h2>
+                <button id="notifications-btn" class="toggle-btn">Включить уведомления</button>
+
+                <div class="info-block">
+                    <h3>Телефон</h3>
+                    <p id="phone">+7 (XXX) XXX-XX-XX</p>
+                    <button onclick="editPhone()">Изменить</button>
+                </div>
+
+                <div class="info-block">
+                    <h3>Адрес доставки</h3>
+                    <p id="address">Укажите адрес</p>
+                    <button onclick="editAddress()">Добавить</button>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="active"><i class="fas fa-home"></i></button>
+        <button><i class="fas fa-heart"></i></button>
+        <button><i class="fas fa-user"></i></button>
     </div>
     <script src="script.js"></script>
 </body>
