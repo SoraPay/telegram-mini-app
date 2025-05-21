@@ -19,9 +19,7 @@
             <div class="section history">
                 <h2>Просмотр истории</h2>
                 <div class="history-scroll">
-                    <div class="card">История 1</div>
-                    <div class="card">История 2</div>
-                    <div class="card">История 3</div>
+                    <!-- История будет добавляться динамически -->
                 </div>
             </div>
 
@@ -30,20 +28,26 @@
                 <div class="catalog-scroll">
                     <div class="product-card" data-id="1">
                         <img src="https://via.placeholder.com/100" alt="Product">
-                        <button class="favorite-btn"><i class="fas fa-heart"></i></button>
                         <h3>Товар 1</h3>
-                        <p>Описание товара</p>
+                        <p>Описание товара 1</p>
                         <span>100 руб</span>
-                        <button>В избранное</button>
+                        <button class="favorite-btn">В избранное</button>
                         <button>Купить</button>
                     </div>
                     <div class="product-card" data-id="2">
                         <img src="https://via.placeholder.com/100" alt="Product">
-                        <button class="favorite-btn"><i class="fas fa-heart"></i></button>
                         <h3>Товар 2</h3>
-                        <p>Описание товара</p>
+                        <p>Описание товара 2</p>
                         <span>200 руб</span>
-                        <button>В избранное</button>
+                        <button class="favorite-btn">В избранное</button>
+                        <button>Купить</button>
+                    </div>
+                    <div class="product-card" data-id="3">
+                        <img src="https://via.placeholder.com/100" alt="Product">
+                        <h3>Товар 3</h3>
+                        <p>Описание товара 3</p>
+                        <span>300 руб</span>
+                        <button class="favorite-btn">В избранное</button>
                         <button>Купить</button>
                     </div>
                 </div>
@@ -54,25 +58,8 @@
         <div class="page favorites-page">
             <div class="section favorites">
                 <h2>Избранные товары</h2>
-                <div class="catalog-scroll">
-                    <div class="product-card" data-id="1">
-                        <img src="https://via.placeholder.com/100" alt="Product">
-                        <button class="favorite-btn"><i class="fas fa-heart liked"></i></button>
-                        <h3>Товар 1</h3>
-                        <p>Описание товара</p>
-                        <span>100 руб</span>
-                        <button>В избранное</button>
-                        <button>Купить</button>
-                    </div>
-                    <div class="product-card" data-id="2">
-                        <img src="https://via.placeholder.com/100" alt="Product">
-                        <button class="favorite-btn"><i class="fas fa-heart liked"></i></button>
-                        <h3>Товар 2</h3>
-                        <p>Описание товара</p>
-                        <span>200 руб</span>
-                        <button>В избранное</button>
-                        <button>Купить</button>
-                    </div>
+                <div class="catalog-scroll favorites-scroll">
+                    <!-- Избранные будут добавляться динамически -->
                 </div>
             </div>
         </div>
@@ -112,15 +99,15 @@
                 </div>
                 <div class="details-section">
                     <h3>Доставка</h3>
-                    <p>Информация о доставке...</p>
+                    <p id="product-delivery">Информация о доставке...</p>
                 </div>
                 <div class="details-section">
                     <h3>Отзывы</h3>
-                    <p>Отзывы покупателей...</p>
+                    <p id="product-reviews">Отзывы покупателей...</p>
                 </div>
                 <div class="details-section">
                     <h3>Вариации</h3>
-                    <p>Другие вариации товара...</p>
+                    <p id="product-variants">Другие вариации товара...</p>
                 </div>
             </div>
         </div>

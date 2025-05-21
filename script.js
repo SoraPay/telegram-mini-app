@@ -1,7 +1,7 @@
 const webApp = window.Telegram.WebApp;
 webApp.ready();
 
-// Данные товаров (заглушка)
+// Данные товаров
 const products = {
     1: {
         title: "Товар 1",
@@ -20,8 +20,21 @@ const products = {
         delivery: "Доставка за 2 дня",
         reviews: "Отзывы: 4.8/5",
         variants: "Цвет: белый, золотой"
+    },
+    3: {
+        title: "Товар 3",
+        description: "Описание товара 3",
+        extendedDescription: "Полное описание товара 3: новый продукт с уникальными функциями.",
+        price: "300 руб",
+        delivery: "Доставка за 5 дней",
+        reviews: "Отзывы: 4.2/5",
+        variants: "Цвет: чёрный, белый"
     }
 };
+
+// Хранилище для избранного и истории
+let favorites = [];
+let history = [];
 
 const navButtons = document.querySelectorAll('.nav-buttons button');
 const pages = document.querySelectorAll('.page');
@@ -35,21 +48,9 @@ navButtons.forEach(button => {
             document.querySelector('.main-page').classList.add('active');
         } else if (button.querySelector('i').classList.contains('fa-heart')) {
             document.querySelector('.favorites-page').classList.add('active');
+            updateFavorites();
         } else if (button.querySelector('i').classList.contains('fa-user')) {
             document.querySelector('.profile-page').classList.add('active');
-        }
-    });
-});
-
-const favoriteButtons = document.querySelectorAll('.favorite-btn');
-favoriteButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        btn.querySelector('i').classList.toggle('liked');
-        if (btn.querySelector('i').classList.contains('liked')) {
-            webApp.showAlert('Добавлено в избранное!');
-        } else {
-            webApp.showAlert('Удалено из избранного!');
         }
     });
 });
@@ -67,9 +68,27 @@ productCards.forEach(card => {
             document.getElementById('product-description').textContent = product.description;
             document.getElementById('product-extended-description').textContent = product.extendedDescription;
             document.getElementById('product-price').textContent = `Цена: ${product.price}`;
-            document.querySelector('.details-section:nth-child(3) p').textContent = product.delivery;
-            document.querySelector('.details-section:nth-child(4) p').textContent = product.reviews;
-            document.querySelector('.details-section:nth-child(5) p').textContent = product.variants;
+            document.getElementById('product-delivery').textContent = product.delivery;
+            document.getElementById('product-reviews').textContent = product.reviews;
+            document.getElementById('product-variants').textContent = product.variants;
+
+            // Добавление в историю
+            updateHistory(productId);
+        }
+    });
+
+    const favoriteBtn = card.querySelector('.favorite-btn');
+    favoriteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const productId = card.getAttribute('data-id');
+        if (favorites.includes(productId)) {
+            favorites = favorites.filter(id => id !== productId);
+            favoriteBtn.textContent = 'В избранное';
+            webApp.showAlert('Удалено из избранного!');
+        } else {
+            favorites.push(productId);
+            favoriteBtn.textContent = 'Убрать из избранного';
+            webApp.showAlert('Добавлено в избранное!');
         }
     });
 });
@@ -93,4 +112,65 @@ function editPhone() {
 
 function editAddress() {
     webApp.showAlert('Функция добавления адреса в разработке');
+}
+
+function updateFavorites() {
+    const favoritesContainer = document.querySelector('.favorites-scroll');
+    favoritesContainer.innerHTML = '';
+    favorites.forEach(productId => {
+        const product = products[productId];
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.setAttribute('data-id', productId);
+        card.innerHTML = `
+            <img src="https://via.placeholder.com/100" alt="Product">
+            <h3>${product.title}</h3>
+            <p>${product.description}</p>
+            <span>${product.price}</span>
+            <button class="favorite-btn">Убрать из избранного</button>
+            <button>Купить</button>
+        `;
+        favoritesContainer.appendChild(card);
+        card.addEventListener('click', () => {
+            pages.forEach(page => page.classList.remove('active'));
+            const productPage = document.querySelector('.product-page');
+            productPage.classList.add('active');
+            document.getElementById('product-title').textContent = product.title;
+            document.getElementById('product-description').textContent = product.description;
+            document.getElementById('product-extended-description').textContent = product.extendedDescription;
+            document.getElementById('product-price').textContent = `Цена: ${product.price}`;
+            document.getElementById('product-delivery').textContent = product.delivery;
+            document.getElementById('product-reviews').textContent = product.reviews;
+            document.getElementById('product-variants').textContent = product.variants;
+
+            updateHistory(productId);
+        });
+
+        const favoriteBtn = card.querySelector('.favorite-btn');
+        favoriteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            favorites = favorites.filter(id => id !== productId);
+            favoriteBtn.textContent = 'В избранное';
+            webApp.showAlert('Удалено из избранного!');
+            updateFavorites();
+        });
+    });
+}
+
+function updateHistory(productId) {
+    const historyContainer = document.querySelector('.history-scroll');
+    history = history.filter(id => id !== productId); // Удаляем, если уже есть
+    history.unshift(productId); // Добавляем в начало
+    if (history.length > 7) {
+        history.pop(); // Удаляем последний, если больше 7
+    }
+
+    historyContainer.innerHTML = '';
+    history.forEach(id => {
+        const product = products[id];
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = product.title;
+        historyContainer.appendChild(card);
+    });
 }
