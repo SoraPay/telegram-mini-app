@@ -28,7 +28,7 @@
             <div class="section catalog">
                 <h2>Каталог</h2>
                 <div class="catalog-scroll">
-                    <div class="product-card">
+                    <div class="product-card" data-id="1">
                         <img src="https://via.placeholder.com/100" alt="Product">
                         <button class="favorite-btn"><i class="fas fa-heart"></i></button>
                         <h3>Товар 1</h3>
@@ -37,7 +37,7 @@
                         <button>В избранное</button>
                         <button>Купить</button>
                     </div>
-                    <div class="product-card">
+                    <div class="product-card" data-id="2">
                         <img src="https://via.placeholder.com/100" alt="Product">
                         <button class="favorite-btn"><i class="fas fa-heart"></i></button>
                         <h3>Товар 2</h3>
@@ -55,7 +55,7 @@
             <div class="section favorites">
                 <h2>Избранные товары</h2>
                 <div class="catalog-scroll">
-                    <div class="product-card">
+                    <div class="product-card" data-id="1">
                         <img src="https://via.placeholder.com/100" alt="Product">
                         <button class="favorite-btn"><i class="fas fa-heart liked"></i></button>
                         <h3>Товар 1</h3>
@@ -64,7 +64,7 @@
                         <button>В избранное</button>
                         <button>Купить</button>
                     </div>
-                    <div class="product-card">
+                    <div class="product-card" data-id="2">
                         <img src="https://via.placeholder.com/100" alt="Product">
                         <button class="favorite-btn"><i class="fas fa-heart liked"></i></button>
                         <h3>Товар 2</h3>
@@ -94,6 +94,33 @@
                     <h3>Адрес доставки</h3>
                     <p id="address">Укажите адрес</p>
                     <button onclick="editAddress()">Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Страница Карточки товара -->
+        <div class="page product-page">
+            <div class="product-details">
+                <button class="back-btn"><i class="fas fa-arrow-left"></i> Назад</button>
+                <img src="https://via.placeholder.com/150" alt="Product" class="product-image">
+                <h2 id="product-title">Название товара</h2>
+                <p id="product-description">Описание товара</p>
+                <span id="product-price">Цена: 100 руб</span>
+                <div class="details-section">
+                    <h3>Расширенное описание</h3>
+                    <p id="product-extended-description">Полное описание товара...</p>
+                </div>
+                <div class="details-section">
+                    <h3>Доставка</h3>
+                    <p>Информация о доставке...</p>
+                </div>
+                <div class="details-section">
+                    <h3>Отзывы</h3>
+                    <p>Отзывы покупателей...</p>
+                </div>
+                <div class="details-section">
+                    <h3>Вариации</h3>
+                    <p>Другие вариации товара...</p>
                 </div>
             </div>
         </div>

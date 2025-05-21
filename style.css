@@ -203,3 +203,58 @@ body {
     border-radius: 3px;
     color: #fff;
 }
+
+/* ... (предыдущий CSS остается) ... */
+
+.product-page {
+    background: #1a1a1a;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.back-btn {
+    background: #333;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.product-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    align-self: center;
+}
+
+.product-details h2 {
+    font-size: 20px;
+    margin: 5px 0;
+}
+
+.product-details p {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.product-details span {
+    font-size: 16px;
+    font-weight: bold;
+    color: #D4AF37;
+}
+
+.details-section {
+    margin-top: 15px;
+}
+
+.details-section h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
