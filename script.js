@@ -1,6 +1,14 @@
 const webApp = window.Telegram.WebApp;
 webApp.ready();
 
+// Получаем ID пользователя для уникальной авторизации
+const userId = webApp.initDataUnsafe.user ? webApp.initDataUnsafe.user.id : 'default_user';
+
+// Загружаем данные пользователя из localStorage
+let userData = JSON.parse(localStorage.getItem(`user_${userId}`)) || { phone: '+7 (XXX) XXX-XX-XX', address: 'Укажите адрес' };
+document.getElementById('phone').textContent = userData.phone;
+document.getElementById('address').textContent = userData.address;
+
 // Данные товаров
 const products = {
     1: {
@@ -64,10 +72,13 @@ navButtons.forEach(button => {
     });
 });
 
+let currentProductId = null;
+
 const productCards = document.querySelectorAll('.product-card');
 productCards.forEach(card => {
     card.addEventListener('click', () => {
         const productId = card.getAttribute('data-id');
+        currentProductId = productId;
         const product = products[productId];
         if (product) {
             pages.forEach(page => page.classList.remove('active'));
@@ -81,7 +92,6 @@ productCards.forEach(card => {
             document.getElementById('product-reviews').textContent = product.reviews;
             document.getElementById('product-variants').textContent = product.variants;
 
-            // Добавление в историю
             updateHistory(productId);
         }
     });
@@ -108,6 +118,16 @@ backBtn.addEventListener('click', () => {
     document.querySelector('.main-page').classList.add('active');
 });
 
+const buyBtn = document.getElementById('buy-btn');
+buyBtn.addEventListener('click', () => {
+    if (userData.phone === '+7 (XXX) XXX-XX-XX' || userData.address === 'Укажите адрес') {
+        webApp.showAlert('Пожалуйста, укажите телефон и адрес доставки в профиле перед покупкой!');
+    } else {
+        const product = products[currentProductId];
+        webApp.showAlert(`Вы купили ${product.title} за ${product.price}! Доставка по адресу: ${userData.address}`);
+    }
+});
+
 const notificationsBtn = document.getElementById('notifications-btn');
 notificationsBtn.addEventListener('click', () => {
     const isEnabled = notificationsBtn.textContent === 'Включить уведомления';
@@ -116,11 +136,39 @@ notificationsBtn.addEventListener('click', () => {
 });
 
 function editPhone() {
-    webApp.showAlert('Функция изменения телефона в разработке');
+    webApp.showPopup({
+        title: 'Изменить телефон',
+        message: 'Введите новый номер телефона',
+        buttons: [
+            { id: 'save', type: 'default', text: 'Сохранить' },
+            { type: 'cancel', text: 'Отмена' }
+        ]
+    }, (buttonId, input) => {
+        if (buttonId === 'save' && input) {
+            userData.phone = input;
+            document.getElementById('phone').textContent = userData.phone;
+            localStorage.setItem(`user_${userId}`, JSON.stringify(userData));
+            webApp.showAlert('Телефон успешно обновлён!');
+        }
+    });
 }
 
 function editAddress() {
-    webApp.showAlert('Функция добавления адреса в разработке');
+    webApp.showPopup({
+        title: 'Изменить адрес',
+        message: 'Введите новый адрес доставки',
+        buttons: [
+            { id: 'save', type: 'default', text: 'Сохранить' },
+            { type: 'cancel', text: 'Отмена' }
+        ]
+    }, (buttonId, input) => {
+        if (buttonId === 'save' && input) {
+            userData.address = input;
+            document.getElementById('address').textContent = userData.address;
+            localStorage.setItem(`user_${userId}`, JSON.stringify(userData));
+            webApp.showAlert('Адрес успешно обновлён!');
+        }
+    });
 }
 
 function updateFavorites() {
@@ -137,7 +185,6 @@ function updateFavorites() {
             <p>${product.description}</p>
             <span>${product.price}</span>
             <button class="favorite-btn">Убрать из избранного</button>
-            <button>Купить</button>
         `;
         favoritesContainer.appendChild(card);
         card.addEventListener('click', () => {
@@ -168,10 +215,10 @@ function updateFavorites() {
 
 function updateHistory(productId) {
     const historyContainer = document.querySelector('.history-scroll');
-    history = history.filter(id => id !== productId); // Удаляем, если уже есть
-    history.unshift(productId); // Добавляем в начало
+    history = history.filter(id => id !== productId);
+    history.unshift(productId);
     if (history.length > 7) {
-        history.pop(); // Удаляем последний, если больше 7
+        history.pop();
     }
 
     historyContainer.innerHTML = '';
