@@ -12,7 +12,7 @@
 
 <body>
     <div class="container">
-        <div class="test-label">Тест 2</div>
+        <div class="test-label">Тест 10</div>
 
         <!-- Главная страница -->
         <div class="page main-page active">
@@ -86,7 +86,7 @@
                 <div class="info-block">
                     <h3>Адрес доставки</h3>
                     <p id="address">Укажите адрес</p>
-                    <button onclick="editAddress()">Добавить</button>
+                    <button onclick="editAddress()">Изменить</button>
                 </div>
             </div>
         </div>
@@ -95,7 +95,7 @@
         <div class="page product-page">
             <div class="product-details">
                 <button class="back-btn"><i class="fas fa-arrow-left"></i> Назад</button>
-                <img src="https://via.placeholder.com/150" alt="Product" class="product-image">
+                <!-- Убрано изображение из-за ошибки -->
                 <h2 id="product-title">Название товара</h2>
                 <p id="product-description">Описание товара</p>
                 <span id="product-price">Цена: 100 руб</span>
@@ -121,9 +121,9 @@
     </div>
 
     <div class="nav-buttons">
-        <button class="active"><i class="fas fa-home"></i></button>
-        <button><i class="fas fa-heart"></i></button>
-        <button><i class="fas fa-user"></i></button>
+        <button class="nav-btn" data-page="main"><i class="fas fa-home"></i></button>
+        <button class="nav-btn" data-page="favorites"><i class="fas fa-heart"></i></button>
+        <button class="nav-btn" data-page="profile"><i class="fas fa-user"></i></button>
     </div>
     <script src="script.js"></script>
 </body>

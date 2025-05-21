@@ -4,7 +4,7 @@ webApp.ready();
 // Получаем ID пользователя для уникальной авторизации
 const userId = webApp.initDataUnsafe.user ? webApp.initDataUnsafe.user.id : 'default_user';
 
-// Загружаем данные пользователя из localStorage
+// Загружаем данные пользователя из localStorage (телефон и адрес редактируются в профиле)
 let userData = JSON.parse(localStorage.getItem(`user_${userId}`)) || { phone: '+7 (XXX) XXX-XX-XX', address: 'Укажите адрес' };
 document.getElementById('phone').textContent = userData.phone;
 document.getElementById('address').textContent = userData.address;
@@ -53,7 +53,7 @@ const products = {
 let favorites = [];
 let history = [];
 
-const navButtons = document.querySelectorAll('.nav-buttons button');
+const navButtons = document.querySelectorAll('.nav-btn');
 const pages = document.querySelectorAll('.page');
 
 navButtons.forEach(button => {
@@ -61,14 +61,8 @@ navButtons.forEach(button => {
         navButtons.forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
         pages.forEach(page => page.classList.remove('active'));
-        if (button.querySelector('i').classList.contains('fa-home')) {
-            document.querySelector('.main-page').classList.add('active');
-        } else if (button.querySelector('i').classList.contains('fa-heart')) {
-            document.querySelector('.favorites-page').classList.add('active');
-            updateFavorites();
-        } else if (button.querySelector('i').classList.contains('fa-user')) {
-            document.querySelector('.profile-page').classList.add('active');
-        }
+        const pageId = button.getAttribute('data-page');
+        document.querySelector(`.page.${pageId}-page`).classList.add('active');
     });
 });
 
@@ -109,6 +103,7 @@ productCards.forEach(card => {
             favoriteBtn.textContent = 'Убрать из избранного';
             webApp.showAlert('Добавлено в избранное!');
         }
+        updateFavorites();
     });
 });
 
@@ -120,11 +115,27 @@ backBtn.addEventListener('click', () => {
 
 const buyBtn = document.getElementById('buy-btn');
 buyBtn.addEventListener('click', () => {
-    if (userData.phone === '+7 (XXX) XXX-XX-XX' || userData.address === 'Укажите адрес') {
+    if (userData.address === 'Укажите адрес' || userData.phone === '+7 (XXX) XXX-XX-XX') {
         webApp.showAlert('Пожалуйста, укажите телефон и адрес доставки в профиле перед покупкой!');
     } else {
-        const product = products[currentProductId];
-        webApp.showAlert(`Вы купили ${product.title} за ${product.price}! Доставка по адресу: ${userData.address}`);
+        webApp.showPopup({
+            title: 'Подтверждение покупки',
+            message: 'Хотите указать второй номер телефона? (опционально)',
+            inputPlaceholder: 'Например: +79991234567',
+            buttons: [
+                { id: 'yes', type: 'default', text: 'Да' },
+                { id: 'no', type: 'default', text: 'Нет' }
+            ]
+        }, (buttonId, input) => {
+            const product = products[currentProductId];
+            if (buttonId === 'yes' && input) {
+                const deliveryInfo = `Телефон: ${userData.phone} (второй: ${input})`;
+                webApp.showAlert(`Вы купили ${product.title} за ${product.price}! Доставка по адресу: ${userData.address}. ${deliveryInfo}`);
+            } else {
+                const deliveryInfo = `Телефон: ${userData.phone}`;
+                webApp.showAlert(`Вы купили ${product.title} за ${product.price}! Доставка по адресу: ${userData.address}. ${deliveryInfo}`);
+            }
+        });
     }
 });
 
@@ -139,6 +150,7 @@ function editPhone() {
     webApp.showPopup({
         title: 'Изменить телефон',
         message: 'Введите новый номер телефона',
+        inputPlaceholder: 'Например: +79991234567',
         buttons: [
             { id: 'save', type: 'default', text: 'Сохранить' },
             { type: 'cancel', text: 'Отмена' }
@@ -157,6 +169,7 @@ function editAddress() {
     webApp.showPopup({
         title: 'Изменить адрес',
         message: 'Введите новый адрес доставки',
+        inputPlaceholder: 'Например: г. Москва, ул. Ленина, д. 1',
         buttons: [
             { id: 'save', type: 'default', text: 'Сохранить' },
             { type: 'cancel', text: 'Отмена' }
