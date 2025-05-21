@@ -12,7 +12,7 @@
 
 <body>
     <div class="container">
-        <div class="test-label">Тест 10</div>
+        <div class="test-label">Тест 11</div>
 
         <!-- Главная страница -->
         <div class="page main-page active">
@@ -81,12 +81,25 @@
                     <h3>Телефон</h3>
                     <p id="phone">+7 (XXX) XXX-XX-XX</p>
                     <button onclick="editPhone()">Изменить</button>
+                    <!-- Скрытый инпут для редактирования телефона -->
+                    <div id="edit-phone-container" class="edit-container" style="display: none;">
+                        <input type="text" id="phone-input" placeholder="Например: +79991234567" class="edit-input">
+                        <button onclick="savePhone()">Сохранить</button>
+                        <button onclick="cancelEdit('phone')">Отмена</button>
+                    </div>
                 </div>
 
                 <div class="info-block">
                     <h3>Адрес доставки</h3>
                     <p id="address">Укажите адрес</p>
                     <button onclick="editAddress()">Изменить</button>
+                    <!-- Скрытый инпут для редактирования адреса -->
+                    <div id="edit-address-container" class="edit-container" style="display: none;">
+                        <input type="text" id="address-input" placeholder="Например: г. Москва, ул. Ленина, д. 1"
+                            class="edit-input">
+                        <button onclick="saveAddress()">Сохранить</button>
+                        <button onclick="cancelEdit('address')">Отмена</button>
+                    </div>
                 </div>
             </div>
         </div>
