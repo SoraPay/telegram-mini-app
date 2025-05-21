@@ -147,52 +147,47 @@ notificationsBtn.addEventListener('click', () => {
 });
 
 function editPhone() {
-    const phoneContainer = document.getElementById('edit-phone-container');
-    const phoneInput = document.getElementById('phone-input');
-    phoneInput.value = userData.phone; // Предзаполняем текущим значением
-    phoneContainer.style.display = 'block';
-    document.getElementById('phone').style.display = 'none';
-}
-
-function savePhone() {
-    const phoneInput = document.getElementById('phone-input');
-    if (phoneInput.value) {
-        userData.phone = phoneInput.value;
-        document.getElementById('phone').textContent = userData.phone;
-        localStorage.setItem(`user_${userId}`, JSON.stringify(userData));
-        webApp.showAlert('Телефон успешно обновлён!');
-    } else {
-        webApp.showAlert('Пожалуйста, введите номер телефона!');
-    }
-    cancelEdit('phone');
+    openModal('Изменить телефон', userData.phone, 'phone');
 }
 
 function editAddress() {
-    const addressContainer = document.getElementById('edit-address-container');
-    const addressInput = document.getElementById('address-input');
-    addressInput.value = userData.address; // Предзаполняем текущим значением
-    addressContainer.style.display = 'block';
-    document.getElementById('address').style.display = 'none';
+    openModal('Изменить адрес', userData.address, 'address');
 }
 
-function saveAddress() {
-    const addressInput = document.getElementById('address-input');
-    if (addressInput.value) {
-        userData.address = addressInput.value;
-        document.getElementById('address').textContent = userData.address;
+function openModal(title, value, type) {
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalInput = document.getElementById('modal-input');
+    modalTitle.textContent = title;
+    modalInput.value = value;
+    modalInput.dataset.type = type;
+    modal.style.display = 'flex';
+}
+
+function saveModal() {
+    const modalInput = document.getElementById('modal-input');
+    const type = modalInput.dataset.type;
+    const value = modalInput.value.trim();
+
+    if (value) {
+        if (type === 'phone') {
+            userData.phone = value;
+            document.getElementById('phone').textContent = userData.phone;
+        } else if (type === 'address') {
+            userData.address = value;
+            document.getElementById('address').textContent = userData.address;
+        }
         localStorage.setItem(`user_${userId}`, JSON.stringify(userData));
-        webApp.showAlert('Адрес успешно обновлён!');
+        webApp.showAlert(`${type === 'phone' ? 'Телефон' : 'Адрес'} успешно обновлён!`);
     } else {
-        webApp.showAlert('Пожалуйста, введите адрес!');
+        webApp.showAlert(`Пожалуйста, введите ${type === 'phone' ? 'номер телефона' : 'адрес'}!`);
     }
-    cancelEdit('address');
+    closeModal();
 }
 
-function cancelEdit(field) {
-    const container = document.getElementById(`edit-${field}-container`);
-    const displayElement = document.getElementById(field);
-    container.style.display = 'none';
-    displayElement.style.display = 'block';
+function closeModal() {
+    const modal = document.getElementById('modal');
+    modal.style.display = 'none';
 }
 
 function updateFavorites() {
