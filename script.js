@@ -1,251 +1,251 @@
-const webApp = window.Telegram.WebApp;
-webApp.ready();
+const Telegram = window.Telegram.WebApp;
+Telegram.ready();
 
-// Получаем ID пользователя для уникальной авторизации
-const userId = webApp.initDataUnsafe.user ? webApp.initDataUnsafe.user.id : 'default_user';
+let products = [
+  { id: 1, name: "Ledger Nano X", price: 119, description: "Bluetooth hardware wallet" },
+  { id: 2, name: "Trezor Model T", price: 159, description: "Touchscreen hardware wallet" },
+  { id: 3, name: "Coldcard Mk4", price: 129, description: "Air-gapped hardware wallet" }
+];
 
-// Загружаем данные пользователя из localStorage (телефон и адрес редактируются в профиле)
-let userData = JSON.parse(localStorage.getItem(`user_${userId}`)) || { phone: '+7 (XXX) XXX-XX-XX', address: 'Укажите адрес' };
-document.getElementById('phone').textContent = userData.phone;
-document.getElementById('address').textContent = userData.address;
+let cart = [];
+let likedItems = [];
+let recentlyViewed = [];
 
-// Данные товаров
-const products = {
-    1: {
-        title: "Товар 1",
-        description: "Описание товара 1",
-        extendedDescription: "Полное описание товара 1: это отличный продукт с множеством функций.",
-        price: "100 руб",
-        delivery: "Доставка за 3 дня",
-        reviews: "Отзывы: 4.5/5",
-        variants: "Цвет: чёрный, золотой"
-    },
-    2: {
-        title: "Товар 2",
-        description: "Описание товара 2",
-        extendedDescription: "Полное описание товара 2: надёжный и стильный выбор.",
-        price: "200 руб",
-        delivery: "Доставка за 2 дня",
-        reviews: "Отзывы: 4.8/5",
-        variants: "Цвет: белый, золотой"
-    },
-    3: {
-        title: "Товар 3",
-        description: "Описание товара 3",
-        extendedDescription: "Полное описание товара 3: новый продукт с уникальными функциями.",
-        price: "300 руб",
-        delivery: "Доставка за 5 дней",
-        reviews: "Отзывы: 4.2/5",
-        variants: "Цвет: чёрный, белый"
-    },
-    4: {
-        title: "Товар 4",
-        description: "Описание товара 4",
-        extendedDescription: "Полное описание товара 4: стильный и современный продукт.",
-        price: "400 руб",
-        delivery: "Доставка за 4 дня",
-        reviews: "Отзывы: 4.7/5",
-        variants: "Цвет: золотой, серебряный"
-    }
-};
+let banners = [
+  { id: 1 },
+  { id: 2 },
+  { id: 3 }
+];
 
-// Хранилище для избранного и истории
-let favorites = [];
-let history = [];
-
-const navButtons = document.querySelectorAll('.nav-btn');
-const pages = document.querySelectorAll('.page');
-
-navButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        navButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        pages.forEach(page => page.classList.remove('active'));
-        const pageId = button.getAttribute('data-page');
-        document.querySelector(`.page.${pageId}-page`).classList.add('active');
-    });
-});
-
-let currentProductId = null;
-
-const productCards = document.querySelectorAll('.product-card');
-productCards.forEach(card => {
-    card.addEventListener('click', () => {
-        const productId = card.getAttribute('data-id');
-        currentProductId = productId;
-        const product = products[productId];
-        if (product) {
-            pages.forEach(page => page.classList.remove('active'));
-            const productPage = document.querySelector('.product-page');
-            productPage.classList.add('active');
-            document.getElementById('product-title').textContent = product.title;
-            document.getElementById('product-description').textContent = product.description;
-            document.getElementById('product-extended-description').textContent = product.extendedDescription;
-            document.getElementById('product-price').textContent = `Цена: ${product.price}`;
-            document.getElementById('product-delivery').textContent = product.delivery;
-            document.getElementById('product-reviews').textContent = product.reviews;
-            document.getElementById('product-variants').textContent = product.variants;
-
-            updateHistory(productId);
-        }
-    });
-
-    const favoriteBtn = card.querySelector('.favorite-btn');
-    favoriteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const productId = card.getAttribute('data-id');
-        if (favorites.includes(productId)) {
-            favorites = favorites.filter(id => id !== productId);
-            favoriteBtn.textContent = 'В избранное';
-            webApp.showAlert('Удалено из избранного!');
-        } else {
-            favorites.push(productId);
-            favoriteBtn.textContent = 'Убрать из избранного';
-            webApp.showAlert('Добавлено в избранное!');
-        }
-        updateFavorites();
-    });
-});
-
-const backBtn = document.querySelector('.back-btn');
-backBtn.addEventListener('click', () => {
-    pages.forEach(page => page.classList.remove('active'));
-    document.querySelector('.main-page').classList.add('active');
-});
-
-const buyBtn = document.getElementById('buy-btn');
-buyBtn.addEventListener('click', () => {
-    if (userData.address === 'Укажите адрес' || userData.phone === '+7 (XXX) XXX-XX-XX') {
-        webApp.showAlert('Пожалуйста, укажите телефон и адрес доставки в профиле перед покупкой!');
-    } else {
-        webApp.showPopup({
-            title: 'Подтверждение покупки',
-            message: 'Хотите указать второй номер телефона? (опционально)',
-            inputPlaceholder: 'Например: +79991234567',
-            buttons: [
-                { id: 'yes', type: 'default', text: 'Да' },
-                { id: 'no', type: 'default', text: 'Нет' }
-            ]
-        }, (buttonId, input) => {
-            const product = products[currentProductId];
-            if (buttonId === 'yes' && input) {
-                const deliveryInfo = `Телефон: ${userData.phone} (второй: ${input})`;
-                webApp.showAlert(`Вы купили ${product.title} за ${product.price}! Доставка по адресу: ${userData.address}. ${deliveryInfo}`);
-            } else {
-                const deliveryInfo = `Телефон: ${userData.phone}`;
-                webApp.showAlert(`Вы купили ${product.title} за ${product.price}! Доставка по адресу: ${userData.address}. ${deliveryInfo}`);
-            }
-        });
-    }
-});
-
-const notificationsBtn = document.getElementById('notifications-btn');
-notificationsBtn.addEventListener('click', () => {
-    const isEnabled = notificationsBtn.textContent === 'Включить уведомления';
-    notificationsBtn.textContent = isEnabled ? 'Выключить уведомления' : 'Включить уведомления';
-    webApp.showAlert(isEnabled ? 'Уведомления включены!' : 'Уведомления выключены!');
-});
-
-function editPhone() {
-    openModal('Изменить телефон', userData.phone, 'phone');
+function renderProducts() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <header>
+      <h1>Shop</h1>
+      <div class="cart-icon" onclick="viewCart()"><i class="fas fa-shopping-cart"></i></div>
+    </header>
+    <div class="search-bar">
+      <input type="text" placeholder="Search" oninput="filterProducts(this.value)">
+    </div>
+    <section class="promotion">
+      <h2>Promotions</h2>
+      <div class="banner-grid">${banners.map(banner => `
+        <div class="banner-card">
+          <div class="image-placeholder"></div>
+        </div>
+      `).join('')}</div>
+    </section>
+    <section class="recently-viewed">
+      <h2>Recently Viewed</h2>
+      <div class="recent-grid">${recentlyViewed.map(product => `
+        <div class="recent-card" onclick="viewProductDetail(${product.id})">
+          <div class="image-placeholder"></div>
+          <p>${product.name}</p>
+        </div>
+      `).join('')}</div>
+    </section>
+    <section class="catalog">
+      <h2>Catalog</h2>
+      <div class="grid">${products.map(product => `
+        <div class="card" onclick="viewProductDetail(${product.id})">
+          <div class="image-placeholder"></div>
+          <div class="like-icon ${likedItems.some(item => item.id === product.id) ? 'liked' : ''}" onclick="toggleLike(${product.id}, event)">
+            <i class="fas fa-heart"></i>
+          </div>
+          <p>${product.name}</p>
+          <p>${product.description}</p>
+        </div>
+      `).join('')}</div>
+    </section>
+    <nav class="bottom-nav">
+      <div class="nav-item home active" onclick="renderProducts()"><i class="fas fa-home"></i></div>
+      <div class="nav-item search" onclick="renderLikedItems()"><i class="fas fa-heart"></i></div>
+      <div class="nav-item profile" onclick="renderProfile()"><i class="fas fa-user"></i></div>
+    </nav>
+  `;
+  updateActiveNav('home');
 }
 
-function editAddress() {
-    openModal('Изменить адрес', userData.address, 'address');
+function filterProducts(searchTerm) {
+  const filtered = products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <header>
+      <h1>Shop</h1>
+      <div class="cart-icon" onclick="viewCart()"><i class="fas fa-shopping-cart"></i></div>
+    </header>
+    <div class="search-bar">
+      <input type="text" placeholder="Search" value="${searchTerm}" oninput="filterProducts(this.value)">
+    </div>
+    <section class="catalog">
+      <h2>Catalog</h2>
+      <div class="grid">${filtered.map(product => `
+        <div class="card" onclick="viewProductDetail(${product.id})">
+          <div class="image-placeholder"></div>
+          <div class="like-icon ${likedItems.some(item => item.id === product.id) ? 'liked' : ''}" onclick="toggleLike(${product.id}, event)">
+            <i class="fas fa-heart"></i>
+          </div>
+          <p>${product.name}</p>
+          <p>${product.description}</p>
+        </div>
+      `).join('')}</div>
+    </section>
+    <nav class="bottom-nav">
+      <div class="nav-item home active" onclick="renderProducts()"><i class="fas fa-home"></i></div>
+      <div class="nav-item search" onclick="renderLikedItems()"><i class="fas fa-heart"></i></div>
+      <div class="nav-item profile" onclick="renderProfile()"><i class="fas fa-user"></i></div>
+    </nav>
+  `;
+  updateActiveNav('home');
 }
 
-function openModal(title, value, type) {
-    const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalInput = document.getElementById('modal-input');
-    modalTitle.textContent = title;
-    modalInput.value = value;
-    modalInput.dataset.type = type;
-    modal.style.display = 'flex';
+function viewProductDetail(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!recentlyViewed.some(item => item.id === productId)) {
+    recentlyViewed.push(product);
+    if (recentlyViewed.length > 5) recentlyViewed.shift();
+  }
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <header>
+      <div class="back-arrow" onclick="renderProducts()"><i class="fas fa-arrow-left"></i></div>
+      <h1>${product.name}</h1>
+    </header>
+    <section class="product-detail">
+      <div class="image-placeholder"></div>
+      <h2>${product.name}</h2>
+      <p>${product.description}</p>
+      <div class="feedback">
+        <div class="rating">
+          <span>4.8</span>
+          <div class="stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+          </div>
+          <span>125 reviews</span>
+        </div>
+        <div class="review">
+          <div class="image-placeholder" style="width: 40px; height: 40px;"></div>
+          <div>
+            <p>Ethan Carter</p>
+            <p>5 stars - 2 months ago</p>
+            <p>The ${product.name} is fantastic...</p>
+          </div>
+        </div>
+      </div>
+      <button class="add-to-cart" onclick="addToCart(${product.id}); renderProducts()">Add to Cart</button>
+    </section>
+    <nav class="bottom-nav">
+      <div class="nav-item home" onclick="renderProducts()"><i class="fas fa-home"></i></div>
+      <div class="nav-item search" onclick="renderLikedItems()"><i class="fas fa-heart"></i></div>
+      <div class="nav-item profile" onclick="renderProfile()"><i class="fas fa-user"></i></div>
+    </nav>
+  `;
 }
 
-function saveModal() {
-    const modalInput = document.getElementById('modal-input');
-    const type = modalInput.dataset.type;
-    const value = modalInput.value.trim();
-
-    if (value) {
-        if (type === 'phone') {
-            userData.phone = value;
-            document.getElementById('phone').textContent = userData.phone;
-        } else if (type === 'address') {
-            userData.address = value;
-            document.getElementById('address').textContent = userData.address;
-        }
-        localStorage.setItem(`user_${userId}`, JSON.stringify(userData));
-        webApp.showAlert(`${type === 'phone' ? 'Телефон' : 'Адрес'} успешно обновлён!`);
-    } else {
-        webApp.showAlert(`Пожалуйста, введите ${type === 'phone' ? 'номер телефона' : 'адрес'}!`);
-    }
-    closeModal();
+function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  cart.push(product);
+  alert(`${product.name} добавлен в корзину!`);
 }
 
-function closeModal() {
-    const modal = document.getElementById('modal');
-    modal.style.display = 'none';
+function viewCart() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <header>
+      <div class="back-arrow" onclick="renderProducts()"><i class="fas fa-arrow-left"></i></div>
+      <h1>Cart</h1>
+    </header>
+    <section class="cart-items">
+      ${cart.length ? cart.map(p => `<p>${p.name} - $${p.price}</p>`).join('') : '<p>Корзина пуста</p>'}
+    </section>
+    <nav class="bottom-nav">
+      <div class="nav-item home" onclick="renderProducts()"><i class="fas fa-home"></i></div>
+      <div class="nav-item search" onclick="renderLikedItems()"><i class="fas fa-heart"></i></div>
+      <div class="nav-item profile" onclick="renderProfile()"><i class="fas fa-user"></i></div>
+    </nav>
+  `;
 }
 
-function updateFavorites() {
-    const favoritesContainer = document.querySelector('.favorites-scroll');
-    favoritesContainer.innerHTML = '';
-    favorites.forEach(productId => {
-        const product = products[productId];
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.setAttribute('data-id', productId);
-        card.innerHTML = `
-            <img src="https://via.placeholder.com/100" alt="Product">
-            <h3>${product.title}</h3>
-            <p>${product.description}</p>
-            <span>${product.price}</span>
-            <button class="favorite-btn">Убрать из избранного</button>
-        `;
-        favoritesContainer.appendChild(card);
-        card.addEventListener('click', () => {
-            pages.forEach(page => page.classList.remove('active'));
-            const productPage = document.querySelector('.product-page');
-            productPage.classList.add('active');
-            document.getElementById('product-title').textContent = product.title;
-            document.getElementById('product-description').textContent = product.description;
-            document.getElementById('product-extended-description').textContent = product.extendedDescription;
-            document.getElementById('product-price').textContent = `Цена: ${product.price}`;
-            document.getElementById('product-delivery').textContent = product.delivery;
-            document.getElementById('product-reviews').textContent = product.reviews;
-            document.getElementById('product-variants').textContent = product.variants;
-
-            updateHistory(productId);
-        });
-
-        const favoriteBtn = card.querySelector('.favorite-btn');
-        favoriteBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            favorites = favorites.filter(id => id !== productId);
-            favoriteBtn.textContent = 'В избранное';
-            webApp.showAlert('Удалено из избранного!');
-            updateFavorites();
-        });
-    });
+function renderProfile() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <header>
+      <div class="back-arrow" onclick="renderProducts()"><i class="fas fa-arrow-left"></i></div>
+      <h1>Profile</h1>
+    </header>
+    <section class="profile">
+      <div class="profile-header">
+        <div class="image-placeholder avatar"></div>
+        <h2>Пользователь</h2>
+        <p>@telegram_user</p>
+      </div>
+      <div class="contact-item">
+        <div class="icon phone"><i class="fas fa-phone"></i></div>
+        <p>Phone number</p>
+      </div>
+      <div class="contact-item">
+        <div class="icon bell"><i class="fas fa-bell"></i></div>
+        <p>Notifications</p>
+        <div class="toggle-switch"></div>
+      </div>
+    </section>
+    <nav class="bottom-nav">
+      <div class="nav-item home" onclick="renderProducts()"><i class="fas fa-home"></i></div>
+      <div class="nav-item search" onclick="renderLikedItems()"><i class="fas fa-heart"></i></div>
+      <div class="nav-item profile active" onclick="renderProfile()"><i class="fas fa-user"></i></div>
+    </nav>
+  `;
+  updateActiveNav('profile');
 }
 
-function updateHistory(productId) {
-    const historyContainer = document.querySelector('.history-scroll');
-    history = history.filter(id => id !== productId);
-    history.unshift(productId);
-    if (history.length > 7) {
-        history.pop();
-    }
-
-    historyContainer.innerHTML = '';
-    history.forEach(id => {
-        const product = products[id];
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.textContent = product.title;
-        historyContainer.appendChild(card);
-    });
+function renderLikedItems() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <header>
+      <div class="back-arrow" onclick="renderProducts()"><i class="fas fa-arrow-left"></i></div>
+      <h1>Liked Items</h1>
+    </header>
+    <section class="liked-items">
+      <div class="grid">${likedItems.map(product => `
+        <div class="card">
+          <div class="image-placeholder"></div>
+          <div class="like-icon ${likedItems.some(item => item.id === product.id) ? 'liked' : ''}" onclick="toggleLike(${product.id}, event)">
+            <i class="fas fa-heart"></i>
+          </div>
+          <p>${product.name}</p>
+          <p>${product.description}</p>
+        </div>
+      `).join('')}</div>
+    </section>
+    <nav class="bottom-nav">
+      <div class="nav-item home" onclick="renderProducts()"><i class="fas fa-home"></i></div>
+      <div class="nav-item search active" onclick="renderLikedItems()"><i class="fas fa-heart"></i></div>
+      <div class="nav-item profile" onclick="renderProfile()"><i class="fas fa-user"></i></div>
+    </nav>
+  `;
+  updateActiveNav('search');
 }
+
+function toggleLike(productId, event) {
+  event.stopPropagation();
+  const product = products.find(p => p.id === productId);
+  const index = likedItems.findIndex(item => item.id === productId);
+  if (index === -1) {
+    likedItems.push(product);
+  } else {
+    likedItems.splice(index, 1);
+  }
+  renderProducts();
+}
+
+function updateActiveNav(activeClass) {
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(item => item.classList.remove('active'));
+  document.querySelector(`.nav-item.${activeClass}`).classList.add('active');
+}
+
+document.addEventListener("DOMContentLoaded", renderProducts);
