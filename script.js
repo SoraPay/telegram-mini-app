@@ -8,9 +8,14 @@ let recentlyViewed = [];
 const API_URL = 'http://localhost:5000/api';
 
 async function fetchData(endpoint) {
-  const response = await fetch(`${API_URL}/${endpoint}`);
-  if (!response.ok) throw new Error('Ошибка загрузки');
-  return await response.json();
+  try {
+    const response = await fetch(`${API_URL}/${endpoint}`);
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error(`Fetch error for ${endpoint}:`, error);
+    throw error;
+  }
 }
 
 async function renderProducts() {
@@ -31,7 +36,7 @@ async function renderProducts() {
         <h2>Promotions</h2>
         <div class="banner-grid">${banners.map(banner => `
           <div class="banner-card">
-            ${banner.photo ? `<img src="http://localhost:5000/${banner.photo}" alt="${banner.name}" />` : '<div class="image-placeholder"></div>'}
+            ${banner.photo ? `<img src="http://localhost:5000/${banner.photo.toLowerCase()}" alt="${banner.name}" />` : '<div class="image-placeholder"></div>'}
           </div>
         `).join('')}</div>
       </section>
@@ -39,7 +44,7 @@ async function renderProducts() {
         <h2>Recently Viewed</h2>
         <div class="recent-grid">${recentlyViewed.map(product => `
           <div class="recent-card" onclick="viewProductDetail(${product.id})">
-            ${product.photo ? `<img src="http://localhost:5000/${product.photo}" alt="${product.name}" />` : '<div class="image-placeholder"></div>'}
+            ${product.photo ? `<img class="product-icon" src="http://localhost:5000/${product.photo.toLowerCase()}" alt="${product.name}" />` : '<div class="image-placeholder"></div>'}
             <p>${product.name}</p>
           </div>
         `).join('')}</div>
@@ -48,7 +53,7 @@ async function renderProducts() {
         <h2>Catalog</h2>
         <div class="grid">${products.map(product => `
           <div class="card" onclick="viewProductDetail(${product.id})">
-            ${product.photo ? `<img src="http://localhost:5000/${product.photo}" alt="${product.name}" />` : '<div class="image-placeholder"></div>'}
+            ${product.photo ? `<img class="product-icon" src="http://localhost:5000/${product.photo.toLowerCase()}" alt="${product.name}" />` : '<div class="image-placeholder"></div>'}
             <div class="like-icon ${likedItems.some(item => item.id === product.id) ? 'liked' : ''}" onclick="toggleLike(${product.id}, event)">
               <i class="fas fa-heart"></i>
             </div>
@@ -87,7 +92,7 @@ async function filterProducts(searchTerm) {
         <h2>Catalog</h2>
         <div class="grid">${filtered.map(product => `
           <div class="card" onclick="viewProductDetail(${product.id})">
-            ${product.photo ? `<img src="http://localhost:5000/${product.photo}" alt="${product.name}" />` : '<div class="image-placeholder"></div>'}
+            ${product.photo ? `<img class="product-icon" src="http://localhost:5000/${product.photo.toLowerCase()}" alt="${product.name}" />` : '<div class="image-placeholder"></div>'}
             <div class="like-icon ${likedItems.some(item => item.id === product.id) ? 'liked' : ''}" onclick="toggleLike(${product.id}, event)">
               <i class="fas fa-heart"></i>
             </div>
@@ -125,7 +130,7 @@ async function viewProductDetail(productId) {
         <h1>${product.name}</h1>
       </header>
       <section class="product-detail">
-        ${product.photo ? `<img src="http://localhost:5000/${product.photo}" alt="${product.name}" />` : '<div class="image-placeholder"></div>'}
+        ${product.photo ? `<img src="http://localhost:5000/${product.photo.toLowerCase()}" alt="${product.name}" />` : '<div class="image-placeholder"></div>'}
         <h2>${product.name}</h2>
         <p>${product.description || ''}</p>
         <div class="feedback">
@@ -241,7 +246,7 @@ async function renderLikedItems() {
       <section class="liked-items">
         <div class="grid">${likedItems.map(product => `
           <div class="card">
-            ${product.photo ? `<img src="http://localhost:5000/${product.photo}" alt="${product.name}" />` : '<div class="image-placeholder"></div>'}
+            ${product.photo ? `<img class="product-icon" src="http://localhost:5000/${product.photo.toLowerCase()}" alt="${product.name}" />` : '<div class="image-placeholder"></div>'}
             <div class="like-icon ${likedItems.some(item => item.id === product.id) ? 'liked' : ''}" onclick="toggleLike(${product.id}, event)">
               <i class="fas fa-heart"></i>
             </div>
